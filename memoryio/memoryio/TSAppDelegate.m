@@ -106,7 +106,7 @@
 
 - (IBAction)forceAction:(id)sender
 {
-    [self takePhotoWithDelay:2.0f];
+    [self takeBlockedImage];
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -251,6 +251,7 @@
         case kIOMessageDeviceHasPoweredOn :
             // mainly for when the display goesto sleep and wakes up
             NSLog(@"messageReceived: got a kIOMessageDeviceHasPoweredOn - device powered on");
+            [self takeBlockedImage];
             break;
         case kIOMessageSystemWillSleep:
             IOAllowPowerChange(root_port,(long)messageArgument);
@@ -261,7 +262,7 @@
         case kIOMessageSystemHasPoweredOn:
             // mainly for when the system goes to sleep and wakes up
             NSLog(@"messageReceived: got a kIOMessageSystemHasPoweredOn - system powered on");
-            [self takePhotoWithDelay:2.0f];
+            [self takeBlockedImage];
             break;
     }
 }
@@ -322,5 +323,43 @@ void displayCallback (void *context, io_service_t service, natural_t messageType
     }); // end of dispatch_async
     
 }
+
+
+// Block image taking
+// F these new-school selectors and mutable associated directories. Let's do this 1997 javascript style..
+// set a timer. If it tries to call again too fast, then drop the request. Sync setting a timer.
+// Timer is a thread, so the sync will unlock and all is well.
+BOOL imageBlocked = NO;
+NSTimer *imageBlockedTimer;
+
+//
+-(void) takeBlockedImage
+{
+    NSLog(@"takeBlockedImage: Trying to take lock...");
+    BOOL iWin = NO;
+    @synchronized(self){
+        if(!imageBlocked) {
+            imageBlocked = YES;
+            iWin = YES;
+            NSLog(@"unblockImage: blocking..");
+            imageBlockedTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(unblockImage) userInfo:nil repeats:NO];
+        } // end of if blocked
+    } // end of sync
+    if(iWin) {
+        NSLog(@"takeBlockedImage: I won");
+        [self takePhotoWithDelay:2.0f];
+    } else {
+        NSLog(@"takeBlockedImage: I lost");
+    } // end of if iWin
+    
+    
+}
+
+-(void) unblockImage
+{
+    NSLog(@"unblockImage: unblocking..");
+    imageBlocked = NO;
+}
+
 
 @end
