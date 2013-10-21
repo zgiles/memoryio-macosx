@@ -115,6 +115,7 @@
     
     [self subscribeDisplayNotifications];
     [self subscribePowerNotifications];
+    [self subscribeDistributedNotifications];
     
     //put startup stuff here //NSUserDefaults standarduserdefaults boolforkey
     BOOL startedAtLogin = NO;
@@ -130,6 +131,7 @@
     
     [self unsubscribeDisplayNotifications];
     [self unsubscribePowerNotifications];
+    [self unsubscribeDistributedNotifications];
 }
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
@@ -320,6 +322,45 @@ void displayCallback (void *context, io_service_t service, natural_t messageType
         //Scheldule our NSUserNotification
         [center scheduleNotification:notification];
     }); // end of dispatch_async
+    
+}
+
+// mainly for screensaver wakeup
+- (void) callbackDistributedNotifications: (NSNotification*) note
+{
+    NSLog(@"callbackDistributedNotifications: %@", [note name]);
+    [self takeBlockedImage];
+}
+
+// mainly for screensaver wakeup
+- (void) subscribeDistributedNotifications
+{
+    // Distribured Notification are everything that happens in the system.. Window change etc
+    // Here we could bind to other things as well, such as Spaces switch, or iTunes song change, etc.
+    // We're going to bind to the screensaver "did stop", that happens after you successfully unlock and close the scrensaver
+    NSLog(@"subscribeDistributedNotifications: subscribing");
+    NSNotificationCenter *center;
+    
+    center = [NSDistributedNotificationCenter
+              notificationCenterForType: NSLocalNotificationCenterType];
+    
+    [center addObserver: self
+               selector: @selector(callbackDistributedNotifications:)
+                   name: @"com.apple.screensaver.didstop"
+                // name: nil  // This would show us everything. Good for debug. Don't uncomment unless you comment out above image taking function in receiveDistributedNote
+                 object: nil];
+    
+}
+
+// mainly for screensaver wakeup
+- (void) unsubscribeDistributedNotifications
+{
+    NSLog(@"unsubscribeDistributedNotifications: unsubscribing");
+    NSNotificationCenter *center;
+    
+    center = [NSDistributedNotificationCenter
+              notificationCenterForType: NSLocalNotificationCenterType];
+    [center removeObserver: self];
     
 }
 
