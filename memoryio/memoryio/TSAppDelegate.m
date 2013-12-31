@@ -50,6 +50,11 @@
         [startupMenuItem setState:NSOffState];
     }
     
+    // Just in case..
+    [self.menuwindow setBackgroundColor:[NSColor blackColor]];
+    // Init with something nice..
+    [self.previewimage setImage:[NSImage imageNamed:@"io_logo"]];
+    
 }
 
 - (IBAction)quitAction:(id)sender
