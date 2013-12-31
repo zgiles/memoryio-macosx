@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0F5DEF4EE3484C338D8831D2 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 72162803BBF04799846E3FFA /* libPods.a */; };
 		2247EBDA15A22FFB00A5C034 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2247EBD915A22FFB00A5C034 /* Cocoa.framework */; };
 		2247EBE415A22FFB00A5C034 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2247EBE215A22FFB00A5C034 /* InfoPlist.strings */; };
 		2247EBE615A22FFB00A5C034 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2247EBE515A22FFB00A5C034 /* main.m */; };
@@ -83,6 +84,8 @@
 		5B6A0C10181DA8B100891D55 /* io_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = io_logo.png; path = ../io_logo.png; sourceTree = "<group>"; };
 		5B6A0C12181DAC7F00891D55 /* io_logo.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = io_logo.icns; path = ../io_logo.icns; sourceTree = "<group>"; };
 		5BFDCF4F180D3E2E001D1B74 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon.png; path = ../icon.png; sourceTree = "<group>"; };
+		72162803BBF04799846E3FFA /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8ABE2CE8C594B1B8ABCAC87 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = ../Pods/Pods.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,7 @@
 				5B197FDF17CB7BBA00E2E608 /* ApplicationServices.framework in Frameworks */,
 				2247EC6615A2364F00A5C034 /* ServiceManagement.framework in Frameworks */,
 				2247EBDA15A22FFB00A5C034 /* Cocoa.framework in Frameworks */,
+				0F5DEF4EE3484C338D8831D2 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +116,7 @@
 				2247EBDF15A22FFB00A5C034 /* memoryio */,
 				2247EBD815A22FFB00A5C034 /* Frameworks */,
 				2247EBD615A22FFB00A5C034 /* Products */,
+				B8ABE2CE8C594B1B8ABCAC87 /* Pods.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -135,6 +140,7 @@
 				5B197FDE17CB7BBA00E2E608 /* ApplicationServices.framework */,
 				2247EBD915A22FFB00A5C034 /* Cocoa.framework */,
 				2247EBDB15A22FFB00A5C034 /* Other Frameworks */,
+				72162803BBF04799846E3FFA /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -195,10 +201,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2247EBF315A22FFB00A5C034 /* Build configuration list for PBXNativeTarget "memoryio" */;
 			buildPhases = (
+				751CE29789D04096BE158928 /* Check Pods Manifest.lock */,
 				2247EBD115A22FFB00A5C034 /* Sources */,
 				2247EBD215A22FFB00A5C034 /* Frameworks */,
 				2247EBD315A22FFB00A5C034 /* Resources */,
 				2247EC6315A2323900A5C034 /* Copy Helper App */,
+				674FBEF0C41743798A5F93FC /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -273,6 +281,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		674FBEF0C41743798A5F93FC /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		751CE29789D04096BE158928 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		2247EBD115A22FFB00A5C034 /* Sources */ = {
@@ -372,27 +413,27 @@
 		};
 		2247EBF415A22FFB00A5C034 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8ABE2CE8C594B1B8ABCAC87 /* Pods.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = memoryio.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "memoryio/memoryio-Prefix.pch";
 				INFOPLIST_FILE = "memoryio/memoryio-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0EE8F4F1-2E0C-44DB-9240-09BC1DE936E6";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		2247EBF515A22FFB00A5C034 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B8ABE2CE8C594B1B8ABCAC87 /* Pods.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_ENTITLEMENTS = memoryio.entitlements;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -400,7 +441,7 @@
 				INFOPLIST_FILE = "memoryio/memoryio-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "0EE8F4F1-2E0C-44DB-9240-09BC1DE936E6";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
