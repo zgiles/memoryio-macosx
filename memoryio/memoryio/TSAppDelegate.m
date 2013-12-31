@@ -2,6 +2,7 @@
 #import <IOKit/pwr_mgt/IOPMLib.h>
 #import "TSAppDelegate.h"
 #import "ImageSnap.h"
+#import "OBMenuBarWindow.h"
 
 //
 //  TSAppDelegate.m
@@ -49,24 +50,6 @@
         [startupMenuItem setState:NSOffState];
     }
     
-	statusItem = [[NSStatusBar systemStatusBar]
-                  statusItemWithLength:NSVariableStatusItemLength];
-	[statusItem setHighlightMode:YES];
-	[statusItem setEnabled:YES];
-	[statusItem setToolTip:@"MemoryIO"];
-	
-	[statusItem setTarget:self];
-    
-    //Used to detect where our files are
-    NSBundle *bundle = [NSBundle mainBundle];
-
-    statusImage = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"icon" ofType:@"png"]];
-
-    //Sets the images in our NSStatusItem
-    [statusItem setImage:statusImage];
-    
-    //put menu in menubar
-    [statusItem setMenu:statusMenu];
 }
 
 - (IBAction)quitAction:(id)sender
@@ -122,7 +105,38 @@
         if ([arg isEqualToString:@"launchAtLogin"]) startedAtLogin = YES;
     }
 
+    statusImage = [NSImage imageNamed:@"icon"];
+    
+    // Part of OBMenuWindow
+    self.menuwindow.menuBarIcon = statusImage;
+    self.menuwindow.highlightedMenuBarIcon = statusImage;
+    self.menuwindow.hasMenuBarIcon = YES;
+    self.menuwindow.attachedToMenuBar = YES;
+    self.menuwindow.isDetachable = NO;
+    self.arrowWidth = 20;
+    self.arrowHeight = 10;
+    self.titleBarHeight = 0;
+    
 }
+
+// Part of OBMenuWindow
+- (void)setArrowWidth:(CGFloat)width
+{
+    self.menuwindow.arrowSize = NSMakeSize(width, self.menuwindow.arrowSize.height);
+}
+
+// Part of OBMenuWindow
+- (void)setArrowHeight:(CGFloat)height
+{
+    self.menuwindow.arrowSize = NSMakeSize(self.menuwindow.arrowSize.width, height);
+}
+
+// Part of OBMenuWindow
+- (void)setTitleBarHeight:(CGFloat)height
+{
+    self.menuwindow.titleBarHeight = height;
+}
+
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
@@ -302,6 +316,21 @@ void displayCallback (void *context, io_service_t service, natural_t messageType
             
             //put the userinfo in so we can tweet later
             [notification setUserInfo:userInfo];
+            
+            // Send a copy of the image to the previewimage for now.
+            // We can do this a smarter way later.
+            
+            NSURL *imageURL = [NSURL fileURLWithPath:[notification.userInfo objectForKey:@"imageURL"] isDirectory:NO];
+            NSError *err;
+            if ([imageURL checkResourceIsReachableAndReturnError:&err] == NO){
+                [[NSAlert alertWithError:err] runModal];
+            }
+            NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:imageURL];
+            NSImage *image = [[NSImage alloc] initWithSize:[imageRep size]];
+            [image addRepresentation:imageRep];
+            [self.previewimage setImage:image];
+            
+            // End Preview Image
             
         } else {
             

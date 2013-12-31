@@ -1,0 +1,5 @@
+TODO:
+* Fix 1-pixel line at the top of the preview window.
+* Make initial NSImage on system open so it's not a blank window
+* Maybe draw thin black border around OBMenuWindow to help pop the image
+* Add forward-backward buttons.

@@ -9,7 +9,13 @@
 //  Created by Jacob Rosenthal on 8/22/13.
 //  Copyright 2012 Augmentous. All rights reserved.
 //
+
+@class OBMenuBarWindow;
+
 @interface TSAppDelegate : NSObject <NSUserNotificationCenterDelegate, NSSharingServiceDelegate, NSApplicationDelegate>
+
+@property (assign) IBOutlet OBMenuBarWindow *menuwindow;
+@property IBOutlet NSImageView *previewimage;
 
 @property NSStatusItem *statusItem;
 @property NSImage *statusImage;
