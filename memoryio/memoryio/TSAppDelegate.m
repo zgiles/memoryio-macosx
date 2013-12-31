@@ -137,6 +137,54 @@
     self.menuwindow.titleBarHeight = height;
 }
 
+-(void)makePreviewFromURL:(NSURL *)url {
+    NSError *err;
+    if ([url checkResourceIsReachableAndReturnError:&err] == NO){
+        [[NSAlert alertWithError:err] runModal];
+    }
+    NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:url];
+    NSImage *image = [[NSImage alloc] initWithSize:[imageRep size]];
+    [image addRepresentation:imageRep];
+    [self makePreview:image];
+}
+
+-(void)makePreview:(NSImage *)image
+{
+    NSSize imageSize = [image size];
+    float width  = imageSize.width;
+    float height = imageSize.height;
+    NSSize targetSize = self.menuwindow.maxSize;
+    float targetWidth  = targetSize.width;
+    float targetHeight = targetSize.height;
+    float scaleFactor  = 0.0;
+    float scaledWidth  = targetWidth;
+    float scaledHeight = targetHeight;
+    if ( NSEqualSizes( imageSize, targetSize ) == NO )
+    {
+        float widthFactor  = targetWidth / width;
+        float heightFactor = targetHeight / height;
+        
+        if ( widthFactor < heightFactor )
+            scaleFactor = widthFactor;
+        else
+            scaleFactor = heightFactor;
+        
+        scaledWidth  = width  * scaleFactor;
+        scaledHeight = height * scaleFactor;
+    }
+
+    CGSize windowSize = CGSizeMake(scaledWidth, scaledHeight);
+    float originX = self.menuwindow.frame.origin.x;
+    float originY = self.menuwindow.frame.origin.y;
+    NSRect windowFrame = CGRectMake(originX, originY, windowSize.width, windowSize.height);
+    [self.menuwindow setFrame:windowFrame display:YES animate:NO];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:NSWindowDidMoveNotification object:self.menuwindow];
+    
+    [self.previewimage setImage:image];
+    [self.previewimage setFrameSize:NSSizeFromCGSize(windowSize)];
+    
+}
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification
 {
@@ -319,16 +367,7 @@ void displayCallback (void *context, io_service_t service, natural_t messageType
             
             // Send a copy of the image to the previewimage for now.
             // We can do this a smarter way later.
-            
-            NSURL *imageURL = [NSURL fileURLWithPath:[notification.userInfo objectForKey:@"imageURL"] isDirectory:NO];
-            NSError *err;
-            if ([imageURL checkResourceIsReachableAndReturnError:&err] == NO){
-                [[NSAlert alertWithError:err] runModal];
-            }
-            NSImageRep *imageRep = [NSImageRep imageRepWithContentsOfURL:imageURL];
-            NSImage *image = [[NSImage alloc] initWithSize:[imageRep size]];
-            [image addRepresentation:imageRep];
-            [self.previewimage setImage:image];
+            [self makePreviewFromURL:imageURL];
             
             // End Preview Image
             
